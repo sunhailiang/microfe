@@ -1,0 +1,24 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>index</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="../lib/umd/single-spa.js"></script>
+  <script>
+    ((global) => {
+      let singleSpa = global.singleSpa
+      singleSpa.registerApplication("spaA", () => Promise.resolve(), function (location) {
+        // return location.hash === '#/home'
+        return true
+      })
+    })(window)
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
