@@ -6,19 +6,46 @@
   <title>index</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="../lib/umd/single-spa.js"></script>
-  <script>
-    ((global) => {
-      let singleSpa = global.singleSpa
-      singleSpa.registerApplication("spaA", () => Promise.resolve(), function (location) {
-        // return location.hash === '#/home'
-        return true
-      })
-    })(window)
-  </script>
+
 </head>
 
 <body>
+  <a href="#/home">appA</a>
+  <a href="#/index">appB</a>
+  <div id="app">默认入口</div>
+  <script>
+    ((global) => {
+      function loadScript(appName) {
+        let script = document.createElement("script")
+        script.src = '/toutrial/' + appName + '.js'
+        document.body.appendChild(script)
+        return new Promise((resolve, reject) => {
+          script.onload = function () {
+            resolve(window[appName])
+            script.parentNode.removeChild(script)
+          }
+          script.onerror = reject
+        })
 
+
+      }
+      let singleSpa = global.singleSpa
+      singleSpa.registerApplication("appA",
+        () => loadScript("appA"),
+        function (location) {
+          return location.hash === '#/home'
+        })
+      singleSpa.registerApplication("appB",
+        () => loadScript("appB"),
+        function (location) {
+          return location.hash === '#/index'
+        }, {
+          age: 18
+        })
+
+      singleSpa.start()
+    })(window)
+  </script>
 </body>
 
 </html>

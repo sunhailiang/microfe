@@ -1,6 +1,6 @@
 
 'use strict'
-import { NO_LOADED, noSkip, noLoadError, isntLoaded, shouldBeActivity } from './apps.helper'
+import { NO_LOADED, noSkip, isLoaded, isntActive, isActive, shouldntBeActive, noLoadError, isntLoaded, shouldBeActivity } from './apps.helper'
 import { invoke } from '../navigation/invoke'
 /**
  * 
@@ -12,7 +12,8 @@ import { invoke } from '../navigation/invoke'
  */
 
 const apps = []
-export function registerApplication (appName, loadFunction, activityWhen, customProps) {
+// 注册小程序
+export function registerApplication (appName, loadFunction, activityWhen, customProps = {}) {
   if (!appName || typeof appName !== 'string') {
     throw new Error("appName must be a non-empty string")
   }
@@ -34,7 +35,19 @@ export function registerApplication (appName, loadFunction, activityWhen, custom
   })
   invoke()
 }
+// 加载app
 export function getAppsToload () {
-  console.log("啥也没拿到", apps)
   return apps.filter(noSkip).filter(noLoadError).filter(isntLoaded).filter(shouldBeActivity)
+}
+// 卸载app
+export function getAppsToUnmount () {
+  return apps.filter(noSkip).filter(isActive).filter(shouldntBeActive)
+}
+// 挂载app
+export function getAppsToMount () {
+  return apps.filter(noSkip).filter(isLoaded).filter(isntActive).filter(shouldBeActivity)
+}
+// 获取当前已经挂载的App
+export function getMoutedApps () {
+  return apps.filter(app => isActive(app))
 }
